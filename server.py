@@ -12,22 +12,29 @@ parts = [
     {'id': 6, 'title':'Abs', 'body' : 'Plus Abs'}
 ]
 
-@app.route('/')
-def index():
-    liTags = ''
-    for part in parts:
-        liTags += f'<li><a href="/read/{part["id"]}/">{part["title"]}</a></li>'
+def templates(order, contents):
     return f'''<!doctype html>
     <html>
         <body>
                 <h1><a href="/">WORKOUT</a></h1>
                 <ol>
-                    {liTags}
+                    {order}
                 </ol>
-                <h2>Fighting !!</h2>
+                {contents}
         </body>
     </html>    
     '''
+
+def getOrder():
+    liTags = ''
+    for part in parts:
+        liTags += f'<li><a href="/read/{part["id"]}/">{part["title"]}</a></li>'
+    return liTags
+
+@app.route('/')
+def index():
+    
+    return templates(getOrder(), "<h2>Fighting !!</h2>")
     
 
 @app.route('/read/<int:id>/')
@@ -44,17 +51,9 @@ def read(id):
             body = part['body']
             break
     
-    return f'''<!doctype html>
-    <html>
-        <body>
-            <h1><a href="/">WORKOUT</a></h1>
-            <ol>
-                {liTags}
-            </ol>
-            <h2>{title}</h2>
-            {body}
-        </body>
-    </html>    
-    '''
+    return templates(getOrder(), f'<h2>{title}</h2>{body}')
 
+@app.route('/create/')
+def create():
+    pass
 app.run(debug=True)
